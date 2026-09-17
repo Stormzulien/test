@@ -1,6 +1,0 @@
-body {
-  background-image: url("./dots_4.svg");
-  background-color: #A9CDCA;
-  background-blend-mode: multiply;
-  background-size: clamp(10px, 6vw, 45px);
-}
