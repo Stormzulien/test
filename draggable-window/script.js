@@ -14,7 +14,7 @@ function dragElement(elem) {
   if (dragHandles.length) {
     // if present, the header is where you move the DIV from:
     for (const dragHandle of dragHandles) {
-      dragHandle.addEventListener("mousedown", dragMouseDown);
+      dragHandle.addEventListener("pointerdown", dragMouseDown);
     }
   }
 
@@ -25,10 +25,10 @@ function dragElement(elem) {
     pos3 = e.clientX;
     pos4 = e.clientY;
 
-    document.addEventListener("mouseup", closeDragElement);
+    document.addEventListener("pointerup", closeDragElement);
 
     // call a function whenever the cursor moves:
-    document.addEventListener("mousemove", elementDrag);
+    document.addEventListener("pointermove", elementDrag);
   }
 
   function elementDrag(e) {
@@ -51,7 +51,7 @@ function dragElement(elem) {
 
   function closeDragElement() {
     // stop moving when mouse button is released:
-    document.removeEventListener("mouseup", closeDragElement);
-    document.removeEventListener("mousemove", elementDrag);
+    document.removeEventListener("pointerup", closeDragElement);
+    document.removeEventListener("pointermove", elementDrag);
   }
 }
