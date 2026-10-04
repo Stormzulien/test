@@ -9,6 +9,7 @@ body {
   border: 1px solid #d3d3d3;
   text-align: center;
   text-wrap: nowrap;
+  touch-action: none;
 }
 
 .draggable-window .drag-handle {
@@ -17,6 +18,7 @@ body {
   z-index: 10;
   background-color: #2196F3;
   color: #fff;
+  touch-action: none;
 }
 
 #drag-1 {
