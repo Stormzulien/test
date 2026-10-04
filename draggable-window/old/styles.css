@@ -2,8 +2,7 @@ body {
   font-family: Arial;
 }
 
-draggable-window {
-  display: block;
+.draggable-window {
   position: absolute;
   z-index: 9;
   background-color: #f1f1f1;
@@ -13,11 +12,15 @@ draggable-window {
   touch-action: none;
 }
 
-draggable-window .drag-handle {
+.draggable-window .drag-handle {
   padding: 10px;
   cursor: move;
   z-index: 10;
   background-color: #2196F3;
   color: #fff;
   touch-action: none;
+}
+
+#drag-1 {
+  bottom: 0;
 }

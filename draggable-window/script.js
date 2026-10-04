@@ -1,57 +1,94 @@
-// Make the DIV element draggable:
-const draggableWindow = document.querySelector("#drag-1");
+"use strict";
 
-dragElement(draggableWindow);
-dragElement(document.querySelector("#drag-2"));
+const elemName = "draggable-window";
 
-function dragElement(elem) {
-  const dragHandles = elem.querySelectorAll(".drag-handle");
-  let pos1 = 0,
-      pos2 = 0,
-      pos3 = 0,
-      pos4 = 0;
-
-  if (dragHandles.length) {
-    // if present, the header is where you move the DIV from:
-    for (const dragHandle of dragHandles) {
-      dragHandle.addEventListener("pointerdown", dragMouseDown);
-    }
+class DraggableWindow extends HTMLElement {
+  constructor() {
+    super();
   }
 
-  function dragMouseDown(e) {
+  #initialized = false;
+  #timeoutId = null;
+  dragHandles = [];
+
+  #pos_1 = 0
+  #pos_2 = 0
+  #pos_3 = 0
+  #pos_4 = 0
+
+  #dragMouseDown = (e) => {
     e.preventDefault();
 
     // get the mouse cursor position at startup:
-    pos3 = e.clientX;
-    pos4 = e.clientY;
+    this.#pos_3 = e.clientX;
+    this.#pos_4 = e.clientY;
 
-    document.addEventListener("pointerup", closeDragElement);
+    document.addEventListener("pointerup", this.#closeDragElement);
 
     // call a function whenever the cursor moves:
-    document.addEventListener("pointermove", elementDrag);
+    document.addEventListener("pointermove", this.#elementDrag);
   }
 
-  function elementDrag(e) {
+  #elementDrag = (e) => {
     e.preventDefault();
 
     // calculate the new cursor position:
-    pos1 = pos3 - e.clientX;
-    pos2 = pos4 - e.clientY;
-    pos3 = e.clientX;
-    pos4 = e.clientY;
+    this.#pos_1 = this.#pos_3 - e.clientX;
+    this.#pos_2 = this.#pos_4 - e.clientY;
+    this.#pos_3 = e.clientX;
+    this.#pos_4 = e.clientY;
 
     // set the element's new position:
-    Object.assign(elem.style, {
-      top: `${elem.offsetTop - pos2}px`,
-      left: `${elem.offsetLeft - pos1}px`,
-      bottom: "unset",
-      right: "unset"
-    })
+    this.style.cssText += `
+      top: ${this.offsetTop - this.#pos_2}px;
+      left: ${this.offsetLeft - this.#pos_1}px;
+      bottom: unset;
+      right: unset;
+    `;
   }
 
-  function closeDragElement() {
+  #closeDragElement = () => {
     // stop moving when mouse button is released:
-    document.removeEventListener("pointerup", closeDragElement);
-    document.removeEventListener("pointermove", elementDrag);
+    document.removeEventListener("pointerup", this.#closeDragElement);
+    document.removeEventListener("pointermove", this.#elementDrag);
+  }
+
+  init() { // Main code
+    this.dragHandles = [ ...this.querySelectorAll(".drag-handle") ];
+
+    if (this.dragHandles.length) {
+      // if present, the header is where you move the DIV from:
+      for (const dragHandle of this.dragHandles) {
+        dragHandle.addEventListener("pointerdown", this.#dragMouseDown);
+      }
+    }
+
+
+    this.#timeoutId = null; // put at end
+  }
+
+  // other stuff
+
+  connectedCallback() {
+    if (this.#initialized) return;
+
+    this.#timeoutId = setTimeout(() => {
+      this.init();
+    }, 0);
+
+    this.#initialized = true;
+  }
+
+  disconnectedCallback() {
+    if (this.#timeoutId) {
+      clearTimeout(this.#timeoutId);
+      this.#timeoutId = null;
+    }
+
+    for (const dragHandle of this.dragHandles) {
+      dragHandle.removeEventListener("pointerdown", this.#dragMouseDown);
+    }
   }
 }
+
+customElements.define(elemName, DraggableWindow);
